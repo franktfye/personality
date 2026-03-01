@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We're Not Really Strangers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #100e0a;
+    --surface: #1c1810;
+    --card-bg: #f5f0e8;
+    --card-text: #1a1610;
+    --warm: #d4a853;
+    --warm-dim: #8a6d35;
+    --muted: #5a5040;
+    --l1: #c0392b;
+    --l2: #7d3c98;
+    --l3: #1a5276;
+    --wild: #1e6b43;
+    --l1-light: #f4c2bd;
+    --l2-light: #e8d5f5;
+    --l3-light: #c8dff0;
+    --wild-light: #c8edd8;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--warm);
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212,168,83,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(192,57,43,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 20% 60%, rgba(125,60,152,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  /* ─── SCREENS ─── */
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 560px;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    animation: fadeUp 0.5s ease both;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── LANDING ─── */
+  .brand-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--warm-dim);
+    margin-bottom: 20px;
+  }
+
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 8vw, 56px);
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+    color: var(--warm);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-title em {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .brand-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 56px;
+    line-height: 1.6;
+    max-width: 340px;
+  }
+
+  .level-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+
+  .level-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .pill-l1 { color: var(--l1); border-color: rgba(192,57,43,0.3); background: rgba(192,57,43,0.07); }
+  .pill-l2 { color: var(--l2); border-color: rgba(125,60,152,0.3); background: rgba(125,60,152,0.07); }
+  .pill-l3 { color: var(--l3); border-color: rgba(26,82,118,0.3); background: rgba(26,82,118,0.07); }
+  .pill-wild { color: var(--wild); border-color: rgba(30,107,67,0.3); background: rgba(30,107,67,0.07); }
+
+  /* ─── BUTTONS ─── */
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--warm);
+    color: var(--bg);
+    border: none;
+    padding: 16px 40px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  .btn-primary:hover {
+    background: #e8bc63;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(212,168,83,0.25);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(90,80,64,0.4);
+    padding: 12px 28px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+  .btn-ghost:hover {
+    color: var(--warm);
+    border-color: var(--warm-dim);
+  }
+
+  /* ─── SETUP SCREEN ─── */
+  .setup-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--warm);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .setup-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .player-count-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-dim);
+    margin-bottom: 16px;
+    align-self: flex-start;
+    width: 100%;
+  }
+
+  .player-count-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 32px;
+  }
+
+  .count-btn {
+    flex: 1;
+    aspect-ratio: 1;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    background: var(--surface);
+    border: 1px solid rgba(90,80,64,0.3);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    max-width: 80px;
+    height: 64px;
+  }
+  .count-btn:hover { border-color: var(--warm-dim); color: var(--warm); }
+  .count-btn.selected {
+    background: rgba(212,168,83,0.12);
+    border-color: var(--warm);
+    color: var(--warm);
+    box-shadow: 0 0 0 1px var(--warm);
+  }
+
+  .player-names-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 36px;
+  }
+
+  .player-input-wrap {
+    position: relative;
+  }
+
+  .player-input-num {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--warm-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .player-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid rgba(90,80,64,0.3);
+    color: var(--warm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 28px 12px 10px 12px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .player-input::placeholder { color: var(--muted); font-size: 13px; }
+  .player-input:focus { border-color: var(--warm-dim); }
+
+  /* ─── LEVEL SELECT SCREEN ─── */
+  .level-select-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--warm);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .level-select-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .level-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .level-card-btn {
+    background: var(--surface);
+    border: 1px solid rgba(90,80,64,0.25);
+    border-radius: 6px;
+    padding: 22px 18px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .level-card-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .level-card-btn:hover {
+    transform: translateY(-3px);
+    border-color: rgba(90,80,64,0.5);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+
+  .lc-l1::before { background: var(--l1); }
+  .lc-l2::before { background: var(--l2); }
+  .lc-l3::before { background: var(--l3); }
+  .lc-wild::before { background: var(--wild); }
+
+  .lc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .lc-l1 .lc-num { color: var(--l1); }
+  .lc-l2 .lc-num { color: var(--l2); }
+  .lc-l3 .lc-num { color: var(--l3); }
+  .lc-wild .lc-num { color: var(--wild); }
+
+  .lc-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--warm);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .lc-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    display: block;
+  }
+
+  .lc-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: rgba(90,80,64,0.6);
+    margin-top: 12px;
+    display: block;
+  }
+
+  /* ─── GAME SCREEN ─── */
+  .game-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 28px;
+  }
+
+  .game-level-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 2px;
+    border: 1px solid;
+  }
+
+  .tag-l1 { color: var(--l1); border-color: rgba(192,57,43,0.4); background: rgba(192,57,43,0.08); }
+  .tag-l2 { color: var(--l2); border-color: rgba(125,60,152,0.4); background: rgba(125,60,152,0.08); }
+  .tag-l3 { color: var(--l3); border-color: rgba(26,82,118,0.4); background: rgba(26,82,118,0.08); }
+  .tag-wild { color: var(--wild); border-color: rgba(30,107,67,0.4); background: rgba(30,107,67,0.08); }
+
+  .game-progress-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+
+  .game-progress-info span {
+    color: var(--warm-dim);
+    font-weight: 500;
+  }
+
+  /* TURN INDICATOR */
+  .turn-indicator {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .turn-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bg);
+    background: var(--warm);
+    flex-shrink: 0;
+  }
+
+  .turn-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .turn-label strong {
+    color: var(--warm);
+    font-weight: 500;
+  }
+
+  .player-dots {
+    display: flex;
+    gap: 5px;
+    margin-left: auto;
+  }
+  .player-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(90,80,64,0.3);
+    transition: background 0.3s ease;
+  }
+  .player-dot.active {
+    background: var(--warm);
+  }
+
+  /* THE CARD */
+  .card-scene {
+    width: 100%;
+    perspective: 1000px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    width: 100%;
+    min-height: 240px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .card.flipping { transform: rotateY(90deg); }
+  .card.flip-in { transform: rotateY(0deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    min-height: 240px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.15),
+      0 8px 20px rgba(0,0,0,0.25),
+      0 24px 48px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: background 0.3s ease;
+  }
+
+  .card-face.wild-card {
+    background: #1e6b43;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.15),
+      0 8px 20px rgba(0,0,0,0.25),
+      0 24px 48px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+  }
+
+  .card-face.wild-card .card-number { color: rgba(255,255,255,0.35); }
+  .card-face.wild-card .card-question { color: #fff; }
+  .card-face.wild-card .card-bottom { color: rgba(255,255,255,0.3); }
+
+  /* subtle paper texture */
+  .card-face::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .card-top-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 12px 12px 0 0;
+  }
+  .stripe-l1 { background: var(--l1); }
+  .stripe-l2 { background: var(--l2); }
+  .stripe-l3 { background: var(--l3); }
+  .stripe-wild { background: var(--wild); }
+
+  .card-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(26,22,16,0.3);
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+
+  .card-question {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(17px, 3.5vw, 21px);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--card-text);
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .card-bottom {
+    margin-top: 24px;
+    align-self: flex-end;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(26,22,16,0.2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* PROGRESS BAR */
+  .progress-track {
+    width: 100%;
+    height: 2px;
+    background: rgba(90,80,64,0.2);
+    border-radius: 2px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--warm);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    opacity: 0.7;
+  }
+
+  /* GAME CONTROLS */
+  .game-controls {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .btn-next {
+    flex: 1;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--warm);
+    color: var(--bg);
+    border: none;
+    padding: 16px 24px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  .btn-next:hover {
+    background: #e8bc63;
+    box-shadow: 0 6px 20px rgba(212,168,83,0.3);
+    transform: translateY(-1px);
+  }
+  .btn-next:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-menu {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(90,80,64,0.3);
+    padding: 16px 18px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .btn-menu:hover { border-color: var(--warm-dim); color: var(--warm); }
+
+  /* ─── END SCREEN ─── */
+  .end-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  .end-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--warm);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .end-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    max-width: 360px;
+  }
+  .end-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  /* ─── MISC ─── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(90,80,64,0.15);
+    margin: 24px 0;
+  }
+
+  .no-reg-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(90,80,64,0.5);
+    margin-top: 20px;
+  }
+  .no-reg-badge::before, .no-reg-badge::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(90,80,64,0.15);
+  }
+
+  @media (max-width: 400px) {
+    .level-cards-grid { grid-template-columns: 1fr; }
+    .player-names-grid { grid-template-columns: 1fr; }
+    .card-face { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── LANDING SCREEN ── -->
+  <div class="screen active" id="screen-landing">
+    <p class="brand-eyebrow">A purposeful card game about connection</p>
+    <h1 class="brand-title">We're <em>Not</em><br>Really Strangers</h1>
+    <p class="brand-sub">Three levels of questions designed to dissolve the space between you and another person.</p>
+
+    <div class="level-pills">
+      <span class="level-pill pill-l1">Perception</span>
+      <span class="level-pill pill-l2">Connection</span>
+      <span class="level-pill pill-l3">Reflection</span>
+      <span class="level-pill pill-wild">✦ Wild Cards</span>
+    </div>
+
+    <button class="btn-primary" onclick="goTo('screen-setup')">Begin Playing</button>
+    <p class="no-reg-badge">Free to play · No account needed · 2–5 players</p>
+  </div>
+
+  <!-- ── SETUP SCREEN ── -->
+  <div class="screen" id="screen-setup">
+    <h2 class="setup-title">Who's playing?</h2>
+    <p class="setup-sub">Choose your group size and optionally give everyone a name.</p>
+
+    <p class="player-count-label">Number of players</p>
+    <div class="player-count-row" id="count-row">
+      <button class="count-btn selected" data-count="2" onclick="setPlayerCount(2)">2</button>
+      <button class="count-btn" data-count="3" onclick="setPlayerCount(3)">3</button>
+      <button class="count-btn" data-count="4" onclick="setPlayerCount(4)">4</button>
+      <button class="count-btn" data-count="5" onclick="setPlayerCount(5)">5</button>
+    </div>
+
+    <p class="player-count-label">Player names <span style="opacity:0.5;font-weight:300;">(optional)</span></p>
+    <div class="player-names-grid" id="player-names-grid"></div>
+
+    <button class="btn-primary" onclick="goTo('screen-level')">Choose a Level →</button>
+    <div style="height:12px;"></div>
+    <button class="btn-ghost" onclick="goTo('screen-landing')">← Back</button>
+  </div>
+
+  <!-- ── LEVEL SELECT SCREEN ── -->
+  <div class="screen" id="screen-level">
+    <h2 class="level-select-title">Choose your depth</h2>
+    <p class="level-select-sub">Each level goes deeper than the last.</p>
+
+    <div class="level-cards-grid" style="grid-template-columns:1fr;">
+      <button class="level-card-btn lc-l1" onclick="startGame('l1')">
+        <span class="lc-num">Level 01</span>
+        <span class="lc-name">Perception</span>
+        <span class="lc-desc">How we see each other. Observation & curiosity. Wild cards may appear.</span>
+        <span class="lc-count">10 questions · shuffled</span>
+      </button>
+
+      <button class="level-card-btn lc-l2" onclick="startGame('l2')">
+        <span class="lc-num">Level 02</span>
+        <span class="lc-name">Connection</span>
+        <span class="lc-desc">Real feelings, fears, and self-disclosure. Wild cards may appear.</span>
+        <span class="lc-count">10 questions · shuffled</span>
+      </button>
+
+      <button class="level-card-btn lc-l3" onclick="startGame('l3')">
+        <span class="lc-num">Level 03</span>
+        <span class="lc-name">Reflection</span>
+        <span class="lc-desc">Meaning-making. Who you're becoming. Wild cards may appear.</span>
+        <span class="lc-count">10 questions · shuffled</span>
+      </button>
+    </div>
+
+    <button class="btn-ghost" onclick="goTo('screen-setup')">← Back</button>
+  </div>
+
+  <!-- ── GAME SCREEN ── -->
+  <div class="screen" id="screen-game">
+    <div class="game-top-bar">
+      <span class="game-level-tag" id="game-level-tag">Level 1 · Perception</span>
+      <div class="game-progress-info">
+        Card <span id="progress-current">1</span> of <span id="progress-total">20</span>
+      </div>
+    </div>
+
+    <div class="turn-indicator">
+      <div class="turn-avatar" id="turn-avatar">A</div>
+      <div class="turn-label">
+        <strong id="turn-name">Player 1</strong>'s turn to answer
+      </div>
+      <div class="player-dots" id="player-dots"></div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <div class="card-scene">
+      <div class="card" id="card">
+        <div class="card-face" id="card-face">
+          <div class="card-top-stripe" id="card-stripe"></div>
+          <span class="card-number" id="card-number">Q 01</span>
+          <p class="card-question" id="card-question">Loading...</p>
+          <span class="card-bottom" id="card-bottom">Perception</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-controls">
+      <button class="btn-menu" onclick="goTo('screen-level')">Menu</button>
+      <button class="btn-next" id="btn-next" onclick="nextCard()">Next Card →</button>
+    </div>
+  </div>
+
+  <!-- ── END SCREEN ── -->
+  <div class="screen" id="screen-end">
+    <div class="end-icon">✦</div>
+    <h2 class="end-title">That's all of them.</h2>
+    <p class="end-sub" id="end-message">You made it through all the questions. Sit with what came up — that's where the real conversation lives.</p>
+    <div class="end-buttons">
+      <button class="btn-primary" onclick="goTo('screen-level')">Play Another Level</button>
+      <button class="btn-ghost" onclick="restartSameLevel()">Replay This Level</button>
+      <button class="btn-ghost" onclick="goTo('screen-setup')">Change Players</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  GAME DATA
+// ─────────────────────────────────────────────
+const QUESTIONS = {
+  l1: [
+    "What's one thing you think I've been through that shaped who I am today?",
+    "What do you think is the most common misconception people have about me?",
+    "What's one word you'd use to describe the energy I bring into a room?",
+    "What do you think I was like as a child?",
+    "What emotion do you think I feel most often but rarely express?",
+    "What do you think I'm most proud of — even if I've never said it?",
+    "What do you think I find hardest to ask for?",
+    "What do you think I look like when I'm truly happy — not just polite?",
+    "What's something you noticed about me the first time we met?",
+    "What do you think I'm most guarded about?",
+    "What kind of friend do you think I am to the people closest to me?",
+    "What do you think I was like in high school?",
+    "What do you think I overthink the most?",
+    "If you could see one day of my life, which day would you want to see?",
+    "What do you think I need more of in my life right now?",
+    "What do you think scares me more — being alone or being misunderstood?",
+    "What's one thing you think I haven't given myself enough credit for?",
+    "Do you think I follow my head or my heart more — and does it serve me?",
+    "What does my face do when I'm trying to hide something?",
+    "What do you think I secretly wish people would ask me about?"
+  ],
+  l2: [
+    "What are you most afraid people see when they look at you?",
+    "What's something you've been carrying alone that you've never said out loud?",
+    "When did you last feel truly seen by someone — what did that feel like?",
+    "What's a version of yourself you've had to leave behind?",
+    "What belief about yourself has held you back the most?",
+    "What's something you've forgiven someone for but still think about?",
+    "What does loneliness feel like for you — when does it show up?",
+    "What's the most honest thing you could say about your relationship with yourself right now?",
+    "What's something you pretend not to care about, but actually care about deeply?",
+    "What's a moment in your life you'd go back to — not to change it, just to feel it again?",
+    "What's something you wish you'd said to someone that you never did?",
+    "What does love look like in your family — and how has that shaped you?",
+    "What's the hardest thing you've ever had to let go of?",
+    "When you're struggling, what do you most want someone to say to you?",
+    "What's something you've changed your mind about completely?",
+    "What's a fear you haven't told anyone about?",
+    "What's something about you that feels like a contradiction?",
+    "What does your inner critic sound like — whose voice does it have?",
+    "What's something you've done that you're still trying to forgive yourself for?",
+    "What's the most vulnerable you've felt in front of another person?"
+  ],
+  l3: [
+    "What's something this conversation helped you see that you hadn't noticed before?",
+    "What do you want to thank me for — even if you've never said it?",
+    "What has knowing me changed or challenged in you?",
+    "What's one thing you hope never changes about who you are?",
+    "What would you want the people who love you to know but might never ask?",
+    "What do you think you're still becoming?",
+    "What's a version of yourself you're ready to step into?",
+    "What's something you've learned about yourself through loss or pain?",
+    "What's the most important thing you've ever learned from another person?",
+    "Looking back, what's something that felt like the worst thing that happened to you — but wasn't?",
+    "If you could send a message to who you were five years ago, what would it say?",
+    "What's a boundary you've set that has changed your life?",
+    "What does your life ask of you right now — and are you answering it?",
+    "What's something you've finally stopped apologizing for?",
+    "What's one truth about yourself you've stopped running from?",
+    "What does a life well-lived mean to you — and are you living it?",
+    "What has this relationship taught you about yourself?",
+    "What part of you took the longest to accept?",
+    "If your life were a book, what chapter are you in — and what's it about?",
+    "What do you want to be remembered for — and are you living that way?"
+  ],
+  wild: [
+    "Tell the other person one thing you've always noticed about them but never said.",
+    "Sit in silence together for 30 seconds. Then share what came up.",
+    "Look the other person in the eyes for 10 seconds. No talking.",
+    "Tell the other person something that made you think of them recently.",
+    "Each of you share the last lie you told — to yourselves or someone else.",
+    "Tell the other person one thing they do that makes you feel safe.",
+    "Write down one word that describes this conversation so far. Share at the same time.",
+    "Name one thing you're grateful for about the other person right now.",
+    "Tell the other person one question you're too afraid to ask — without asking it.",
+    "Each person shares the last thing they cried about."
+  ]
+};
+
+const LEVEL_CONFIG = {
+  l1:   { tag: 'Level 1 · Perception', tagClass: 'tag-l1',   stripeClass: 'stripe-l1', bottomLabel: 'Perception', color: '#c0392b' },
+  l2:   { tag: 'Level 2 · Connection', tagClass: 'tag-l2',   stripeClass: 'stripe-l2', bottomLabel: 'Connection', color: '#7d3c98' },
+  l3:   { tag: 'Level 3 · Reflection', tagClass: 'tag-l3',   stripeClass: 'stripe-l3', bottomLabel: 'Reflection', color: '#1a5276' },
+  wild: { tag: '✦ Wild Card',          tagClass: 'tag-wild',  stripeClass: 'stripe-wild', bottomLabel: 'Wild Card', color: '#1e6b43' }
+};
+
+const GAME_LENGTH = 10;
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let state = {
+  playerCount: 2,
+  players: ['Player 1', 'Player 2'],
+  currentLevel: 'l1',
+  deck: [],      // array of { text, type } where type = level key or 'wild'
+  cardIndex: 0,
+  currentPlayer: 0,
+  isAnimating: false
+};
+
+// ─────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  target.classList.add('active');
+  target.style.animation = 'none';
+  requestAnimationFrame(() => {
+    target.style.animation = '';
+    target.classList.remove('active');
+    requestAnimationFrame(() => target.classList.add('active'));
+  });
+}
+
+// ─────────────────────────────────────────────
+//  SETUP
+// ─────────────────────────────────────────────
+function setPlayerCount(n) {
+  state.playerCount = n;
+  document.querySelectorAll('.count-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.count) === n);
+  });
+  renderPlayerInputs();
+}
+
+function renderPlayerInputs() {
+  const grid = document.getElementById('player-names-grid');
+  const prevValues = state.players.slice();
+  grid.innerHTML = '';
+  for (let i = 0; i < state.playerCount; i++) {
+    const wrap = document.createElement('div');
+    wrap.className = 'player-input-wrap';
+    wrap.innerHTML = `
+      <span class="player-input-num">P${i+1}</span>
+      <input class="player-input" type="text" placeholder="Player ${i+1}"
+        value="${prevValues[i] || ''}"
+        oninput="updatePlayerName(${i}, this.value)"
+        maxlength="20">
+    `;
+    grid.appendChild(wrap);
+  }
+  while (state.players.length < state.playerCount) state.players.push('');
+  state.players = state.players.slice(0, state.playerCount);
+}
+
+function updatePlayerName(i, val) {
+  state.players[i] = val;
+}
+
+function getPlayerName(i) {
+  return state.players[i]?.trim() || `Player ${i+1}`;
+}
+
+// ─────────────────────────────────────────────
+//  DECK BUILDER
+//  Build 10-card deck: 8 level questions + 2 wild cards
+//  Wild cards inserted at random positions (not first or last)
+// ─────────────────────────────────────────────
+function buildDeck(level) {
+  const shuffle = arr => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  // Pick 8 random level questions
+  const levelQs = shuffle(QUESTIONS[level]).slice(0, 8).map(text => ({ text, type: level }));
+
+  // Pick 2 random wild cards
+  const wildQs = shuffle(QUESTIONS.wild).slice(0, 2).map(text => ({ text, type: 'wild' }));
+
+  // Insert wilds at 2 random interior positions (index 2–7 to avoid first/last)
+  const deck = [...levelQs];
+  const positions = shuffle([2, 3, 4, 5, 6, 7]).slice(0, 2).sort((a, b) => a - b);
+  // Insert from back so indices don't shift
+  for (let i = positions.length - 1; i >= 0; i--) {
+    deck.splice(positions[i], 0, wildQs[i]);
+  }
+
+  return deck; // always exactly 10 cards
+}
+
+// ─────────────────────────────────────────────
+//  GAME
+// ─────────────────────────────────────────────
+function startGame(level) {
+  state.currentLevel = level;
+  state.deck = buildDeck(level);
+  state.cardIndex = 0;
+  state.currentPlayer = 0;
+  updateGameUI();
+  goTo('screen-game');
+}
+
+function updateGameUI() {
+  const card = state.deck[state.cardIndex];
+  const cfg = LEVEL_CONFIG[card.type];
+  const baseCfg = LEVEL_CONFIG[state.currentLevel];
+  const total = GAME_LENGTH;
+  const idx = state.cardIndex;
+
+  // top bar — always shows the chosen level, not wild
+  const tag = document.getElementById('game-level-tag');
+  tag.textContent = baseCfg.tag;
+  tag.className = 'game-level-tag ' + baseCfg.tagClass;
+
+  document.getElementById('progress-current').textContent = idx + 1;
+  document.getElementById('progress-total').textContent = total;
+
+  // progress bar
+  const pct = total > 1 ? (idx / (total - 1)) * 100 : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // turn indicator
+  const cp = state.currentPlayer;
+  const name = getPlayerName(cp);
+  document.getElementById('turn-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('turn-name').textContent = name;
+
+  const dots = document.getElementById('player-dots');
+  dots.innerHTML = '';
+  for (let i = 0; i < state.playerCount; i++) {
+    const d = document.createElement('div');
+    d.className = 'player-dot' + (i === cp ? ' active' : '');
+    dots.appendChild(d);
+  }
+
+  // card — full green background + stripe change if wild card
+  document.getElementById('card-number').textContent = `Q ${String(idx+1).padStart(2,'0')}`;
+  document.getElementById('card-question').textContent = card.text;
+  document.getElementById('card-bottom').textContent = cfg.bottomLabel;
+  document.getElementById('card-stripe').className = 'card-top-stripe ' + cfg.stripeClass;
+  const cardFace = document.getElementById('card-face');
+  cardFace.classList.toggle('wild-card', card.type === 'wild');
+
+  // next button
+  const btn = document.getElementById('btn-next');
+  btn.textContent = idx >= total - 1 ? 'Finish ✦' : 'Next Card →';
+  btn.disabled = false;
+}
+
+function nextCard() {
+  if (state.isAnimating) return;
+
+  if (state.cardIndex >= GAME_LENGTH - 1) {
+    showEndScreen();
+    return;
+  }
+
+  state.isAnimating = true;
+  const card = document.getElementById('card');
+  card.classList.add('flipping');
+
+  setTimeout(() => {
+    state.cardIndex++;
+    state.currentPlayer = (state.currentPlayer + 1) % state.playerCount;
+    updateGameUI();
+    card.classList.remove('flipping');
+    card.classList.add('flip-in');
+    setTimeout(() => {
+      card.classList.remove('flip-in');
+      state.isAnimating = false;
+    }, 300);
+  }, 275);
+}
+
+function showEndScreen() {
+  document.getElementById('end-message').textContent =
+    `You made it through all ${GAME_LENGTH} cards. Sit with what came up — that's where the real conversation lives.`;
+  goTo('screen-end');
+}
+
+function restartSameLevel() {
+  startGame(state.currentLevel);
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+renderPlayerInputs();
+</script>
+</body>
+</html>

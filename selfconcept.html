@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Self-Concept Measure</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            line-height: 1.6;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        /* Live Visualization Styles */
+        .visualization-container {
+            text-align: center;
+            margin: 2rem 0;
+            background: #fafbfc;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow: hidden;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+        .circle-group {
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .circle-text-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+            word-wrap: break-word;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+        }
+
+        /* Scale Styles */
+        .scale-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .scale-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .scale-item:hover {
+            background-color: #f0f4f8;
+        }
+        .scale-item input[type="radio"] {
+            margin-top: 1rem;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        /* Results Styles */
+        #results {
+            display: none;
+            background-color: #e8f8f5;
+            padding: 1.5rem;
+            border-left: 5px solid #2ecc71;
+            border-radius: 4px;
+            margin-top: 2rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+        #results h3 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Part 1: Define Your Self-Concept</h2>
+        <p>Type your descriptions below. Watch as they appear in the circles.</p>
+
+        <div class="form-group">
+            <label for="perceived-self">1. Your Perceived Self (Actual Self)</label>
+            <textarea id="perceived-self" rows="2" placeholder="I am currently..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="ideal-self">2. Your Ideal Self</label>
+            <textarea id="ideal-self" rows="2" placeholder="I aspire to be..."></textarea>
+        </div>
+
+        <div class="visualization-container">
+            <svg viewBox="0 0 500 320" width="500" height="320">
+                <g id="group-perceived" class="circle-group" transform="translate(130, 160)">
+                    <circle cx="0" cy="0" r="110" fill="rgba(52, 152, 219, 0.3)" stroke="#2980b9" stroke-width="2"/>
+                    <foreignObject x="-90" y="-90" width="180" height="180">
+                        <div class="circle-text-container" id="live-perceived-text">Perceived Self</div>
+                    </foreignObject>
+                </g>
+
+                <g id="group-ideal" class="circle-group" transform="translate(370, 160)">
+                    <circle cx="0" cy="0" r="110" fill="rgba(231, 76, 60, 0.3)" stroke="#c0392b" stroke-width="2" stroke-dasharray="6"/>
+                    <foreignObject x="-90" y="-90" width="180" height="180">
+                        <div class="circle-text-container" id="live-ideal-text">Ideal Self</div>
+                    </foreignObject>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Part 2: Self-Discrepancy Scale</h2>
+        <p>Select the option below that best describes the current relationship between your <strong>Perceived Self</strong> and your <strong>Ideal Self</strong>.</p>
+
+        <div class="scale-container">
+            <label class="scale-item">
+                <svg width="80" height="50" viewBox="0 0 120 80">
+                    <circle cx="35" cy="40" r="25" fill="rgba(52, 152, 219, 0.3)" stroke="#2980b9" stroke-width="2"/>
+                    <circle cx="85" cy="40" r="25" fill="rgba(231, 76, 60, 0.3)" stroke="#c0392b" stroke-width="2" stroke-dasharray="4"/>
+                </svg>
+                <input type="radio" name="overlap-scale" value="1">
+                <span>1</span>
+            </label>
+
+            <label class="scale-item">
+                <svg width="80" height="50" viewBox="0 0 120 80">
+                    <circle cx="45" cy="40" r="25" fill="rgba(52, 152, 219, 0.3)" stroke="#2980b9" stroke-width="2"/>
+                    <circle cx="75" cy="40" r="25" fill="rgba(231, 76, 60, 0.3)" stroke="#c0392b" stroke-width="2" stroke-dasharray="4"/>
+                </svg>
+                <input type="radio" name="overlap-scale" value="2">
+                <span>2</span>
+            </label>
+
+            <label class="scale-item">
+                <svg width="80" height="50" viewBox="0 0 120 80">
+                    <circle cx="50" cy="40" r="25" fill="rgba(52, 152, 219, 0.3)" stroke="#2980b9" stroke-width="2"/>
+                    <circle cx="70" cy="40" r="25" fill="rgba(231, 76, 60, 0.3)" stroke="#c0392b" stroke-width="2" stroke-dasharray="4"/>
+                </svg>
+                <input type="radio" name="overlap-scale" value="3">
+                <span>3</span>
+            </label>
+
+            <label class="scale-item">
+                <svg width="80" height="50" viewBox="0 0 120 80">
+                    <circle cx="55" cy="40" r="25" fill="rgba(52, 152, 219, 0.3)" stroke="#2980b9" stroke-width="2"/>
+                    <circle cx="65" cy="40" r="25" fill="rgba(231, 76, 60, 0.3)" stroke="#c0392b" stroke-width="2" stroke-dasharray="4"/>
+                </svg>
+                <input type="radio" name="overlap-scale" value="4">
+                <span>4</span>
+            </label>
+
+            <label class="scale-item">
+                <svg width="80" height="50" viewBox="0 0 120 80">
+                    <circle cx="60" cy="40" r="25" fill="rgba(52, 152, 219, 0.3)" stroke="#2980b9" stroke-width="2"/>
+                    <circle cx="60" cy="40" r="25" fill="rgba(231, 76, 60, 0.3)" stroke="#c0392b" stroke-width="2" stroke-dasharray="4"/>
+                </svg>
+                <input type="radio" name="overlap-scale" value="5">
+                <span>5</span>
+            </label>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // 1. Live Text Updating Logic
+        const perceivedInput = document.getElementById('perceived-self');
+        const idealInput = document.getElementById('ideal-self');
+        const livePerceivedText = document.getElementById('live-perceived-text');
+        const liveIdealText = document.getElementById('live-ideal-text');
+
+        perceivedInput.addEventListener('input', (e) => {
+            livePerceivedText.innerText = e.target.value || 'Perceived Self';
+        });
+
+        idealInput.addEventListener('input', (e) => {
+            liveIdealText.innerText = e.target.value || 'Ideal Self';
+        });
+
+        // 2. Immediate Scoring and Animation Logic
+        const radios = document.querySelectorAll('input[name="overlap-scale"]');
+        const groupPerceived = document.getElementById('group-perceived');
+        const groupIdeal = document.getElementById('group-ideal');
+        const resultsDiv = document.getElementById('results');
+
+        // Circle positions for the main visual based on the scale (1-5)
+        const scalePositions = {
+            1: { p: 130, i: 370 }, // Far apart
+            2: { p: 170, i: 330 }, // Touching
+            3: { p: 210, i: 290 }, // Moderate overlap
+            4: { p: 235, i: 265 }, // High overlap
+            5: { p: 250, i: 250 }  // Complete overlap
+        };
+
+        // Psychological meaning for each score
+        const scoreMeanings = {
+            1: "<strong>High Discrepancy:</strong> You currently feel there is a significant gap between who you are right now and who you want to be.",
+            2: "<strong>Moderate-High Discrepancy:</strong> You see some shared traits, but feel you still have a considerable distance to go to reach your ideal self.",
+            3: "<strong>Moderate Alignment:</strong> You are actively finding common ground and making progress between your current self and your aspirations.",
+            4: "<strong>High Alignment:</strong> You feel very close to your ideal self, with only minor differences remaining.",
+            5: "<strong>Complete Alignment:</strong> You feel that you currently embody your ideal self completely."
+        };
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const score = parseInt(e.target.value);
+                const pos = scalePositions[score];
+
+                // Animate the large circles to match the selection
+                groupPerceived.setAttribute('transform', `translate(${pos.p}, 160)`);
+                groupIdeal.setAttribute('transform', `translate(${pos.i}, 160)`);
+
+                // Immediately display the score and its meaning
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = `
+                    <h3>Your Score: ${score} / 5</h3>
+                    <p>${scoreMeanings[score]}</p>
+                `;
+
+                // Smooth scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        });
+    </script>
+</body>
+</html>
