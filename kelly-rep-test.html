@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Constructs — Kelly's Rep Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f5f0e8;
+    --paper-dark: #ede7d9;
+    --accent: #8b3a2a;
+    --accent-light: #c4614d;
+    --gold: #b8933f;
+    --muted: #7a6f62;
+    --border: #c8bfb0;
+    --success: #3a6b4a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Textured background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Language toggle */
+  .lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    z-index: 100;
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--paper);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+  }
+  .lang-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 7px 14px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .lang-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 32px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .header::after {
+    content: '✦';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--paper);
+    padding: 0 12px;
+    color: var(--gold);
+    font-size: 14px;
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .subtitle {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 300;
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    margin-bottom: 44px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .progress-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 1px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 52px;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  /* Instructions box */
+  .instructions {
+    background: var(--paper-dark);
+    border-left: 3px solid var(--gold);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+  .instructions p { margin-bottom: 0.6em; }
+  .instructions p:last-child { margin-bottom: 0; }
+
+  /* Name inputs grid */
+  .names-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 560px) { .names-grid { grid-template-columns: 1fr; } }
+
+  .name-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .name-field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .name-field span.role {
+    font-size: 0.85rem;
+    color: var(--ink);
+    font-style: italic;
+    margin-bottom: 2px;
+  }
+  .name-field input {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 6px 0;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .name-field input:focus { border-bottom-color: var(--accent); }
+  .name-field input::placeholder { color: var(--border); }
+
+  /* Triad cards */
+  .triads {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .triad-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 24px 28px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
+  }
+  .triad-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
+  .triad-card.complete { border-left: 3px solid var(--success); }
+
+  .triad-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .triad-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+  .triad-people {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .person-chip {
+    background: var(--paper-dark);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.85rem;
+    color: var(--ink);
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .person-chip.blank {
+    color: var(--muted);
+    font-style: normal;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+  }
+
+  .triad-instruction {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* Radio alike selector */
+  .alike-selector {
+    margin-bottom: 18px;
+  }
+  .alike-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .alike-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .alike-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: all 0.15s;
+    font-size: 0.9rem;
+  }
+  .alike-option:hover { border-color: var(--accent); }
+  .alike-option.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .alike-option input { display: none; }
+
+  /* Construct / Contrast inputs */
+  .construct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  @media (max-width: 520px) { .construct-row { grid-template-columns: 1fr; } }
+
+  .construct-field { display: flex; flex-direction: column; gap: 6px; }
+  .construct-field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .construct-field label span {
+    color: var(--accent);
+  }
+  .construct-field input {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 6px 0;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .construct-field input:focus { border-bottom-color: var(--accent); }
+  .construct-field input::placeholder { color: var(--border); }
+
+  /* Results */
+  .results-section {
+    margin-top: 56px;
+    border-top: 1px solid var(--border);
+    padding-top: 40px;
+    display: none;
+  }
+  .results-section.visible { display: block; }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 24px;
+  }
+  @media (max-width: 520px) { .results-grid { grid-template-columns: 1fr; } }
+
+  .results-col-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .result-row {
+    display: contents;
+  }
+  .result-cell {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+  .result-cell:nth-child(odd) { background: var(--paper); }
+  .result-cell:nth-child(even) { background: var(--paper-dark); border-left: 1px solid var(--border); }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 14px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 1px;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+  .btn.primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
+
+  /* Source note */
+  .source-note {
+    margin-top: 52px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  /* Divider ornament */
+  .ornament {
+    text-align: center;
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    margin: 40px 0;
+  }
+
+  /* Print styles */
+  @media print {
+    .lang-toggle, .btn-row { display: none; }
+    .results-section { display: block !important; }
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeUp 0.5s ease both; }
+  .section:nth-child(1) { animation-delay: 0.05s; }
+  .section:nth-child(2) { animation-delay: 0.12s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+
+  /* Tooltip for names */
+  .info-icon {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: var(--border);
+    color: var(--muted);
+    border-radius: 50%;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-align: center;
+    line-height: 15px;
+    cursor: default;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* Chinese specific */
+  .zh { display: none; }
+  .en { display: block; }
+  body.zh-mode .zh { display: block; }
+  body.zh-mode .en { display: none; }
+
+  /* Inline bilingual for labels */
+  span.zh { display: none; }
+  body.zh-mode span.zh { display: inline; }
+  body.zh-mode span.en { display: none; }
+  span.en { display: inline; }
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('zh')">中文</button>
+</div>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="eyebrow">
+      <span class="en">George A. Kelly · Psychology of Personal Constructs</span>
+      <span class="zh">喬治·凱利 · 個人建構心理學</span>
+    </div>
+    <h1>
+      <span class="en">Personal <em>Constructs</em></span>
+      <span class="zh">個人<em>建構</em>測驗</span>
+    </h1>
+    <p class="subtitle">
+      <span class="en">The Role Construct Repertory (Rep) Test — Minimum Context Form</span>
+      <span class="zh">角色建構目錄測驗（Rep Test）——最小情境版</span>
+    </p>
+  </header>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span class="en">Progress</span>
+      <span class="zh">進度</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <!-- SECTION 1: Instructions + Names -->
+  <div class="section" id="section-names">
+    <div class="section-header">
+      <span class="section-num">STEP 01</span>
+      <h2>
+        <span class="en">Name the People in Your Life</span>
+        <span class="zh">列出您生命中的重要人物</span>
+      </h2>
+    </div>
+
+    <div class="instructions en">
+      <p>To begin, write down the names of the following 12 people. Although a person may fit more than one category, you need to compile a list of 12 <em>different</em> people. If there is no one who fits a category, name someone who is similar to the category description. For example, if you do not have a brother, select someone who is like a brother to you.</p>
+    </div>
+    <div class="instructions zh">
+      <p>首先，請在以下12個類別中各寫下一個人的名字。雖然某人可能同時符合多個類別，但您必須列出12位<em>不同</em>的人。若某一類別沒有符合的人，請選一位與該描述相近的人。例如，若您沒有兄弟，請選一位像兄弟一樣的人。</p>
+    </div>
+
+    <div class="names-grid" id="names-grid"></div>
+  </div>
+
+  <div class="ornament">· · ·</div>
+
+  <!-- SECTION 2: Triads -->
+  <div class="section" id="section-triads">
+    <div class="section-header">
+      <span class="section-num">STEP 02</span>
+      <h2>
+        <span class="en">Discover Your Constructs</span>
+        <span class="zh">發現您的個人建構</span>
+      </h2>
+    </div>
+
+    <div class="instructions en">
+      <p>Next, take three of these people at a time, as indicated by the numbers in the following list. Then describe in what <em>important way</em> two of them are alike but different from the third. Put a word or phrase describing the two similar people in the <strong>Construct</strong> column and a description of the remaining person in the <strong>Contrast</strong> column.</p>
+    </div>
+    <div class="instructions zh">
+      <p>接下來，按照以下編號，每次選取三位人物。描述其中兩位在某個<em>重要方面</em>相似，但與第三位不同之處。將描述那兩位相似者的詞語或短語填入<strong>建構</strong>欄，將描述第三位的詞語填入<strong>對比</strong>欄。</p>
+    </div>
+
+    <div class="triads" id="triads-container"></div>
+  </div>
+
+  <!-- SECTION 3: Results -->
+  <div class="results-section" id="results-section">
+    <div class="section-header">
+      <span class="section-num">RESULT</span>
+      <h2>
+        <span class="en">Your Personal Construct Summary</span>
+        <span class="zh">您的個人建構摘要</span>
+      </h2>
+    </div>
+
+    <div class="instructions en">
+      <p>This abbreviated version of Kelly's Rep Test provides a quick idea of the constructs you use to organize information about the people you know and meet. You may want to compare your responses with those of other test takers. No doubt you will find a few overlapping constructs, but also many you hadn't thought of. Of course, these differences in personal constructs represent differences in personality that should translate into individual differences in your behavior.</p>
+    </div>
+    <div class="instructions zh">
+      <p>這是凱利Rep測驗的簡化版，能快速呈現您用來組織所認識之人的個人建構。您可以將您的回答與其他測試者比較。您會發現一些重疊的建構，但也會有許多您未曾想到的。這些個人建構的差異，代表了人格的差異，並會反映在您的行為上。</p>
+    </div>
+
+    <div class="results-grid" id="results-grid">
+      <div class="results-col-header"><span class="en">Construct</span><span class="zh">建構</span></div>
+      <div class="results-col-header"><span class="en">Contrast</span><span class="zh">對比</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="window.print()">
+        <span class="en">Print Results</span>
+        <span class="zh">列印結果</span>
+      </button>
+      <button class="btn" onclick="resetTest()">
+        <span class="en">Start Over</span>
+        <span class="zh">重新開始</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="btn-row" id="main-btn-row">
+    <button class="btn primary" onclick="showResults()">
+      <span class="en">View My Constructs →</span>
+      <span class="zh">查看我的建構 →</span>
+    </button>
+    <button class="btn" onclick="clearAll()">
+      <span class="en">Clear All</span>
+      <span class="zh">清除全部</span>
+    </button>
+  </div>
+
+  <p class="source-note">
+    <span class="en">Scale: The Role Construct Repertory (Rep) Test. Source: A Theory of Personality: The Psychology of Personal Constructs by George A. Kelly. Copyright © 1955, 1963 by George A. Kelly, renewed 1983, 1991 by Gladys Kelly. Used by permission of W. W. Norton & Company, Inc.</span>
+    <span class="zh">量表：角色建構目錄測驗（Rep Test）。資料來源：George A. Kelly 著《人格理論：個人建構心理學》。版權所有 © 1955, 1963 George A. Kelly，1983, 1991 由 Gladys Kelly 續期。經W. W. Norton & Company, Inc. 授權使用。</span>
+  </p>
+</div>
+
+<script>
+// ─── Data ───────────────────────────────────────────────────────────────────
+const ROLES = {
+  en: [
+    "A teacher you liked",
+    "A teacher you disliked",
+    "Your wife (husband) or boyfriend (girlfriend)",
+    "An employer, supervisor, or officer you found hard to get along with",
+    "An employer, supervisor, or officer you liked",
+    "Your mother",
+    "Your father",
+    "Brother nearest your age",
+    "Sister nearest your age",
+    "A person with whom you have worked who was easy to get along with",
+    "A person with whom you have worked who was hard to understand",
+    "A neighbor with whom you get along well"
+  ],
+  zh: [
+    "您喜歡的一位老師",
+    "您不喜歡的一位老師",
+    "您的妻子（丈夫）或男友（女友）",
+    "一位您難以相處的雇主、上司或主管",
+    "一位您喜歡的雇主、上司或主管",
+    "您的母親",
+    "您的父親",
+    "與您年齡最接近的兄弟",
+    "與您年齡最接近的姐妹",
+    "一位與您共事且容易相處的人",
+    "一位與您共事但難以理解的人",
+    "一位與您相處融洽的鄰居"
+  ]
+};
+
+const TRIADS = [
+  [3,6,7], [1,4,10], [4,7,8], [1,6,9],
+  [4,5,8], [2,11,12], [8,9,10], [2,3,5],
+  [5,7,11], [1,10,12]
+];
+
+let names = Array(13).fill(''); // 1-indexed
+let constructs = Array(TRIADS.length).fill('');
+let contrasts  = Array(TRIADS.length).fill('');
+let alikes     = Array(TRIADS.length).fill([]); // which two are alike
+
+// ─── Language ────────────────────────────────────────────────────────────────
+let lang = 'en';
+function setLang(l) {
+  lang = l;
+  document.body.classList.toggle('zh-mode', l === 'zh');
+  document.querySelectorAll('.lang-btn').forEach((b,i) => {
+    b.classList.toggle('active', (i===0 && l==='en') || (i===1 && l==='zh'));
+  });
+  refreshTriadPeople();
+  refreshNameChips();
+}
+
+// ─── Build Name Inputs ───────────────────────────────────────────────────────
+function buildNames() {
+  const grid = document.getElementById('names-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 12; i++) {
+    const div = document.createElement('div');
+    div.className = 'name-field';
+    div.innerHTML = `
+      <label><span class="en">Person ${i}</span><span class="zh">人物 ${i}</span></label>
+      <span class="role en">${ROLES.en[i-1]}</span>
+      <span class="role zh">${ROLES.zh[i-1]}</span>
+      <input type="text" id="name-${i}" placeholder="${i}" value="${names[i] || ''}"
+        oninput="names[${i}]=this.value; updateProgress(); refreshTriadPeople(); refreshNameChips();" />
+    `;
+    grid.appendChild(div);
+  }
+}
+
+// ─── Build Triads ────────────────────────────────────────────────────────────
+function buildTriads() {
+  const container = document.getElementById('triads-container');
+  container.innerHTML = '';
+
+  TRIADS.forEach((triad, idx) => {
+    const card = document.createElement('div');
+    card.className = 'triad-card';
+    card.id = `triad-${idx}`;
+
+    // Build person chips
+    const chipsHtml = triad.map(n =>
+      `<span class="person-chip" id="chip-${idx}-${n}">${names[n] || '#'+n}</span>`
+    ).join('');
+
+    // Build alike options
+    const pairs = [
+      [triad[0], triad[1]],
+      [triad[0], triad[2]],
+      [triad[1], triad[2]]
+    ];
+    const alikeHtml = pairs.map((pair, pi) => {
+      const sel = (alikes[idx] && alikes[idx][0]===pair[0] && alikes[idx][1]===pair[1]) ? 'selected' : '';
+      return `<div class="alike-option ${sel}" onclick="selectAlike(${idx},[${pair}])">
+        <span id="ao-${idx}-${pi}">
+          ${names[pair[0]] || '#'+pair[0]} &amp; ${names[pair[1]] || '#'+pair[1]}
+        </span>
+      </div>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="triad-header">
+        <span class="triad-num">SET ${String(idx+1).padStart(2,'0')}</span>
+        <div class="triad-people">${chipsHtml}</div>
+      </div>
+      <p class="triad-instruction">
+        <span class="en">Which two are alike in an important way, but different from the third?</span>
+        <span class="zh">哪兩位在某個重要方面相似，但與第三位不同？</span>
+      </p>
+      <div class="alike-selector">
+        <div class="alike-label">
+          <span class="en">The two alike are →</span>
+          <span class="zh">相似的兩位是 →</span>
+        </div>
+        <div class="alike-options" id="alike-opts-${idx}">${alikeHtml}</div>
+      </div>
+      <div class="construct-row">
+        <div class="construct-field">
+          <label><span class="en">Construct</span><span class="zh">建構</span> <span style="color:var(--accent)">(two alike)</span></label>
+          <input type="text" placeholder="${lang==='zh' ? '描述相似兩位的詞語' : 'word / phrase for the two alike'}"
+            id="construct-${idx}" value="${constructs[idx]||''}"
+            oninput="constructs[${idx}]=this.value; updateProgress(); checkComplete(${idx});" />
+        </div>
+        <div class="construct-field">
+          <label><span class="en">Contrast</span><span class="zh">對比</span> <span style="color:var(--accent)">(the third)</span></label>
+          <input type="text" placeholder="${lang==='zh' ? '描述第三位的詞語' : 'word / phrase for the third'}"
+            id="contrast-${idx}" value="${contrasts[idx]||''}"
+            oninput="contrasts[${idx}]=this.value; updateProgress(); checkComplete(${idx});" />
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function selectAlike(idx, pair) {
+  alikes[idx] = pair;
+  const opts = document.querySelectorAll(`#alike-opts-${idx} .alike-option`);
+  opts.forEach(o => o.classList.remove('selected'));
+  const pairs = [
+    [TRIADS[idx][0], TRIADS[idx][1]],
+    [TRIADS[idx][0], TRIADS[idx][2]],
+    [TRIADS[idx][1], TRIADS[idx][2]]
+  ];
+  pairs.forEach((p, pi) => {
+    if (p[0]===pair[0] && p[1]===pair[1]) opts[pi].classList.add('selected');
+  });
+  checkComplete(idx);
+  updateProgress();
+}
+
+function refreshTriadPeople() {
+  TRIADS.forEach((triad, idx) => {
+    triad.forEach(n => {
+      const chip = document.getElementById(`chip-${idx}-${n}`);
+      if (chip) chip.textContent = names[n] || '#'+n;
+    });
+    // refresh alike option labels
+    const pairs = [
+      [triad[0], triad[1]], [triad[0], triad[2]], [triad[1], triad[2]]
+    ];
+    pairs.forEach((pair, pi) => {
+      const el = document.getElementById(`ao-${idx}-${pi}`);
+      if (el) el.innerHTML = `${names[pair[0]]||'#'+pair[0]} &amp; ${names[pair[1]]||'#'+pair[1]}`;
+    });
+    // refresh placeholders
+    const ci = document.getElementById(`construct-${idx}`);
+    const cni = document.getElementById(`contrast-${idx}`);
+    if(ci) ci.placeholder = lang==='zh' ? '描述相似兩位的詞語' : 'word / phrase for the two alike';
+    if(cni) cni.placeholder = lang==='zh' ? '描述第三位的詞語' : 'word / phrase for the third';
+  });
+}
+
+function refreshNameChips() {
+  // called when name fields change — already handled in refreshTriadPeople
+  refreshTriadPeople();
+}
+
+function checkComplete(idx) {
+  const card = document.getElementById(`triad-${idx}`);
+  if (!card) return;
+  const hasConstruct = constructs[idx] && constructs[idx].trim();
+  const hasContrast  = contrasts[idx]  && contrasts[idx].trim();
+  const hasAlike     = alikes[idx] && alikes[idx].length > 0;
+  card.classList.toggle('complete', !!(hasConstruct && hasContrast && hasAlike));
+}
+
+// ─── Progress ────────────────────────────────────────────────────────────────
+function updateProgress() {
+  let filled = 0;
+  const total = 12 + TRIADS.length * 2;
+  for (let i = 1; i <= 12; i++) if (names[i] && names[i].trim()) filled++;
+  TRIADS.forEach((_, idx) => {
+    if (constructs[idx] && constructs[idx].trim()) filled++;
+    if (contrasts[idx]  && contrasts[idx].trim())  filled++;
+  });
+  const pct = Math.round(filled / total * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// ─── Results ─────────────────────────────────────────────────────────────────
+function showResults() {
+  const grid = document.getElementById('results-grid');
+  // clear old rows
+  const old = grid.querySelectorAll('.result-cell');
+  old.forEach(e => e.remove());
+
+  TRIADS.forEach((_, idx) => {
+    const c = constructs[idx] || '—';
+    const n = contrasts[idx]  || '—';
+    const rc = document.createElement('div');
+    rc.className = 'result-cell';
+    rc.textContent = c;
+    const rn = document.createElement('div');
+    rn.className = 'result-cell';
+    rn.textContent = n;
+    grid.appendChild(rc);
+    grid.appendChild(rn);
+  });
+
+  const rs = document.getElementById('results-section');
+  rs.classList.add('visible');
+  rs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearAll() {
+  if (!confirm(lang==='zh' ? '確定要清除所有資料？' : 'Clear all data and start over?')) return;
+  resetTest();
+}
+
+function resetTest() {
+  names = Array(13).fill('');
+  constructs = Array(TRIADS.length).fill('');
+  contrasts  = Array(TRIADS.length).fill('');
+  alikes     = Array(TRIADS.length).fill([]);
+  document.getElementById('results-section').classList.remove('visible');
+  buildNames();
+  buildTriads();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+buildNames();
+buildTriads();
+updateProgress();
+</script>
+</body>
+</html>
